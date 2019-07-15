@@ -10,10 +10,12 @@ namespace CustomAllocator
 	{
 		static constexpr size_t mg_memory_allocated = 1024 * 1024;
 		static constexpr size_t mg_memory_per_class = 131072;
-		static constexpr size_t mg_minimum_size_class = 4;
+		static constexpr size_t mg_minimum_size_class = 8;
 	public:
 		Allocator();
 		~Allocator();
+		Allocator(const Allocator&);
+		Allocator(Allocator&&);
 
 		void* Allocate(size_t i_size);
 		void Deallocate(void* ip_pointer);

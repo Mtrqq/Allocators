@@ -29,6 +29,18 @@ CustomAllocator::Allocator::~Allocator()
 	delete[] reinterpret_cast<unsigned char*>(mp_memory_pool_start);
 }
 
+CustomAllocator::Allocator::Allocator(const Allocator& i_another_alloc)
+	:mp_memory_pool_start{i_another_alloc.mp_memory_pool_start},
+	mp_end_of_pool{i_another_alloc.mp_end_of_pool}
+{
+}
+
+CustomAllocator::Allocator::Allocator(Allocator&& i_another_alloc)
+	: mp_memory_pool_start{ std::move(i_another_alloc.mp_memory_pool_start) },
+	mp_end_of_pool{ std::move(i_another_alloc.mp_end_of_pool) }
+{
+}
+
 void* CustomAllocator::Allocator::Allocate(size_t i_size)
 {
 	auto class_shifting = DetermineClassShifting(i_size);
