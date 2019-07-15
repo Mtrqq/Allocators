@@ -55,7 +55,6 @@ void CustomAllocator::Allocator::Deallocate(void* ip_pointer)
 	distance = BytesBetweenPointers(memory_class_start, ip_pointer);
 	if (distance % memory_for_token != 0)
 	{
-		std::cout << "Error :" << distance % memory_for_token;
 		throw std::bad_alloc{};
 	}
 	auto skipped_system_blocks = (mg_memory_per_class / memory_for_token) - GetRealAmountOfBlocks(memory_for_token);
@@ -106,11 +105,9 @@ void* CustomAllocator::Allocator::GetSuitablePosition(void* ip_memory_class_posi
 	auto checked_bit = 1 << (ByteSize - 1);
 	while (bits_to_observe--)
 	{
-		std::cout << ((*bit_field) & checked_bit);
 		if ((*bit_field) & checked_bit)
 		{
 			*bit_field &= ~checked_bit;
-			std::cout << std::endl;
 			auto offset = static_cast<long long>(i_class_block_size) * position_from_start;
 			auto system_offset = (mg_memory_per_class / i_class_block_size) - GetRealAmountOfBlocks(i_class_block_size);
 			return GetShiftedPointer(ip_memory_class_position, offset + system_offset * i_class_block_size);
