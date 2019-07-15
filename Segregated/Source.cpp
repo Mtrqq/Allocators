@@ -11,10 +11,8 @@ public:
 
 	AllocatorWrapper() = default;
 	~AllocatorWrapper() = default;
-	AllocatorWrapper(const CustomAllocator::Allocator& i_copied_alloc) 
-		:alloc{ i_copied_alloc } {}
 	AllocatorWrapper(CustomAllocator::Allocator&& i_moved_alloc)
-		:alloc{ i_moved_alloc } {}
+		:alloc{ std::move(i_moved_alloc) } {}
 
 	std::vector<void*> TryAllocate(size_t i_memory, size_t i_count = 1);
 	std::vector<void*> TryAllocate(const std::vector<size_t>& i_size_vector);
@@ -62,7 +60,7 @@ int main()
 	{
 		if (rand() % 2)
 		{
-			auto memory = (rand() % 200) + 1;
+			auto memory = (rand() % 256) + 1;
 			std::cout << "Allocation of " << memory << " bytes " << std::endl;
 			pointers.push_back(alloc.Allocate(memory));
 		}
@@ -78,7 +76,7 @@ int main()
 	{
 		alloc.Deallocate(pointer);
 	}
-	AllocatorWrapper allocator(std::move(alloc));
+	AllocatorWrapper allocator;
 	std::vector<size_t> sizes_to_allocate(256);
 	std::uniform_int_distribution<int> u_id(1, 512);
 	std::mt19937 generator(std::random_device{}());

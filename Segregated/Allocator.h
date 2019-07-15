@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <cmath>
 
 namespace CustomAllocator
@@ -14,14 +15,13 @@ namespace CustomAllocator
 	public:
 		Allocator();
 		~Allocator();
-		Allocator(const Allocator&);
 		Allocator(Allocator&&);
 
 		void* Allocate(size_t i_size);
 		void Deallocate(void* ip_pointer);
 
 	private:
-		void* mp_memory_pool_start;
+		std::unique_ptr<char> mp_memory_pool_start;
 		void* mp_end_of_pool;
 
 		static size_t BytesBetweenPointers(void* ip_start, void* ip_end)
@@ -36,7 +36,7 @@ namespace CustomAllocator
 
 		void* GetNthMemoryClass(size_t i_class_index)
 		{
-			auto p_position = GetShiftedPointer(mp_memory_pool_start, static_cast<long long>(i_class_index) * mg_memory_per_class);
+			auto p_position = GetShiftedPointer(mp_memory_pool_start.get(), static_cast<long long>(i_class_index) * mg_memory_per_class);
 			if (p_position >= mp_end_of_pool) return nullptr;
 			return p_position;
 		}

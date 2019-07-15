@@ -8,11 +8,11 @@
 
 CustomAllocator::Allocator::Allocator()
 	:mp_memory_pool_start{ new char[mg_memory_allocated] },
-	mp_end_of_pool{GetShiftedPointer(mp_memory_pool_start,mg_memory_allocated)}
+	mp_end_of_pool{GetShiftedPointer(mp_memory_pool_start.get(),mg_memory_allocated)}
 {
 	auto steps_count = mg_memory_allocated / mg_memory_per_class;
 	auto memory_class_token_size = mg_minimum_size_class;
-	auto p_walker = mp_memory_pool_start;
+	void* p_walker = mp_memory_pool_start.get();
 	for (unsigned i = 0; i < steps_count; ++i)
 	{
 		auto amount_of_bits = GetRealAmountOfBlocks(memory_class_token_size);
@@ -25,13 +25,6 @@ CustomAllocator::Allocator::Allocator()
 }
 
 CustomAllocator::Allocator::~Allocator()
-{
-	delete[] reinterpret_cast<unsigned char*>(mp_memory_pool_start);
-}
-
-CustomAllocator::Allocator::Allocator(const Allocator& i_another_alloc)
-	:mp_memory_pool_start{i_another_alloc.mp_memory_pool_start},
-	mp_end_of_pool{i_another_alloc.mp_end_of_pool}
 {
 }
 
@@ -52,9 +45,9 @@ void* CustomAllocator::Allocator::Allocate(size_t i_size)
 
 void CustomAllocator::Allocator::Deallocate(void* ip_pointer)
 {
-	if (ip_pointer < mp_memory_pool_start && ip_pointer >= mp_end_of_pool)
+	if (ip_pointer < mp_memory_pool_start.get() && ip_pointer >= mp_end_of_pool)
 		throw std::bad_alloc{}; // alloc ?
-	auto distance = BytesBetweenPointers(mp_memory_pool_start, ip_pointer);
+	auto distance = BytesBetweenPointers(mp_memory_pool_start.get(), ip_pointer);
 
 	auto class_index = distance / mg_memory_per_class;
 	auto memory_class_start = GetNthMemoryClass(class_index);
