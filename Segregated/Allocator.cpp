@@ -45,7 +45,7 @@ void* CustomAllocator::Allocator::Allocate(size_t i_size)
 
 void CustomAllocator::Allocator::Deallocate(void* ip_pointer)
 {
-	if (ip_pointer < mp_memory_pool_start.get() && ip_pointer >= mp_end_of_pool)
+	if (ip_pointer < mp_memory_pool_start.get() || ip_pointer >= mp_end_of_pool)
 		throw std::bad_alloc{}; // alloc ?
 	auto distance = BytesBetweenPointers(mp_memory_pool_start.get(), ip_pointer);
 
