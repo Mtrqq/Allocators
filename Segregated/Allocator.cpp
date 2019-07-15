@@ -112,8 +112,9 @@ void* CustomAllocator::Allocator::GetSuitablePosition(void* ip_memory_class_posi
 			*bit_field &= ~checked_bit;
 			std::cout << std::endl;
 			auto offset = static_cast<long long>(i_class_block_size) * position_from_start;
+			auto system_offset = (mg_memory_per_class / i_class_block_size) - GetRealAmountOfBlocks(i_class_block_size)
 			return GetShiftedPointer(ip_memory_class_position,
-				offset + ((mg_memory_per_class / i_class_block_size) - GetRealAmountOfBlocks(i_class_block_size)) * i_class_block_size);
+				offset + system_offset * i_class_block_size);
 		}
 		checked_bit >>= 1;
 		++position_from_start;
