@@ -36,7 +36,7 @@ std::vector<void*> AllocatorWrapper::TryAllocate(const std::vector<size_t>& i_si
 	std::vector<void*> pointers;
 	for (auto size : i_size_vector)
 	{
-		std::cout << "Allocation of " << size << " bytes at ";
+		std::cout << "Allocation of " << size << " bytes" << std::endl;
 		pointers.push_back(alloc.Allocate(size));
 	}
 	return pointers;
